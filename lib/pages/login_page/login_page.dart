@@ -67,7 +67,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                         border: Border.all(color: MyColors.black),
                         borderRadius: BorderRadius.circular(MySizes.size10SW),
                       ),
-                      child: TextFormField(
+                      child: TextField(
                         style: MyTextStyles.content18RegularBlackSW,
                         obscureText: _hidePassword,
                         decoration: InputDecoration(

@@ -17,7 +17,7 @@ class Category extends StatelessWidget {
     return AnimatedContainer(
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(horizontal: MySizes.size20SW),
-      width: MySizes.size175SW,
+      width: 175,
       duration: const Duration(milliseconds: 100),
       margin: EdgeInsets.only(right: MySizes.size5SW),
       decoration: BoxDecoration(
@@ -37,7 +37,7 @@ class Category extends StatelessWidget {
             title,
             style: TextStyle(
                 color: isSelected ? MyColors.white : MyColors.grey,
-                fontSize: MySizes.size18SW,
+                fontSize: MySizes.size17SW,
                 fontWeight: FontWeight.w600),
           ),
         ],

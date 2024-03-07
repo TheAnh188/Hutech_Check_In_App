@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hutech_check_in_app/data/assignment.dart';
-import 'package:hutech_check_in_app/data/contest.dart';
+import 'package:hutech_check_in_app/data/bottom_bar_controller.dart';
 import 'package:hutech_check_in_app/data/email.dart';
-import 'package:hutech_check_in_app/data/notification_check.dart';
+import 'package:hutech_check_in_app/data/notification.dart';
 import 'package:hutech_check_in_app/data/password.dart';
 import 'package:hutech_check_in_app/data/phone_number.dart';
 import 'package:hutech_check_in_app/pages/account_page/account_page.dart';
@@ -46,9 +45,6 @@ class MyApp extends StatelessWidget {
           create: (context) => Subject(),
         ),
         ChangeNotifierProvider(
-          create: (context) => AssignmentList(),
-        ),
-        ChangeNotifierProvider(
           create: (context) => PhoneNumber(),
         ),
         ChangeNotifierProvider(
@@ -58,13 +54,13 @@ class MyApp extends StatelessWidget {
           create: (context) => Email(),
         ),
         ChangeNotifierProvider(
-          create: (context) => ContestList(),
-        ),
-        ChangeNotifierProvider(
           create: (context) => Notificationn(),
         ),
         ChangeNotifierProvider(
           create: (context) => NotificationList(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => BottomBarController(),
         ),
       ],
       child: MaterialApp(
@@ -106,23 +102,20 @@ class _CheckInAppState extends State<CheckInApp> with TickerProviderStateMixin {
     const AccountPage()
   ];
 
-  late PageController _mainPageController;
-  // late TabController _tabController;
   late int _index;
 
   @override
   void initState() {
     super.initState();
-
     _index = 0;
-    _mainPageController = PageController(initialPage: _index);
-    // _tabController = TabController(length: _pages.length, vsync: this);
   }
 
   @override
   void dispose() {
     super.dispose();
-    _mainPageController.dispose();
+    Provider.of<BottomBarController>(context, listen: false)
+        .getPageController
+        .dispose();
   }
 
   @override
@@ -136,92 +129,57 @@ class _CheckInAppState extends State<CheckInApp> with TickerProviderStateMixin {
         minTextAdapt: true);
     return Scaffold(
         body: PageView.builder(
-          // physics: const NeverScrollableScrollPhysics(),
-          controller: _mainPageController,
+          physics: const NeverScrollableScrollPhysics(),
+          controller: Provider.of<BottomBarController>(context, listen: false)
+              .getPageController,
+          // controller: _pageController,
           scrollDirection: Axis.horizontal,
           onPageChanged: (index) {
             ScaffoldMessenger.of(context).hideCurrentSnackBar();
             setState(() {
               _index = index;
             });
-            // _tabController.index = index;
           },
           itemCount: _pages.length,
           itemBuilder: (context, index) => _pages[index],
         ),
-        bottomNavigationBar: SizedBox(
-          height: MySizes.size60SW,
-          child: BottomNavigationBar(
-            unselectedLabelStyle: MyTextStyles.content12MediumBlackSW,
-            selectedLabelStyle: MyTextStyles.content12MediumBlackSW,
-            iconSize: MySizes.size20SW,
-            backgroundColor: MyColors.white,
-            selectedItemColor: Colors.blue,
-            unselectedItemColor: MyColors.grey,
-            onTap: (index) {
-              _mainPageController.jumpToPage(index);
-            },
-            type: BottomNavigationBarType.fixed,
-            currentIndex: _index,
-            items: const [
-              BottomNavigationBarItem(
-                icon: Icon(MyIcons.house),
-                label: 'Trang chủ',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(MyIcons.course),
-                label: 'Khóa học',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(MyIcons.group),
-                label: 'Nhóm lớp',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(MyIcons.contest),
-                label: 'Cuộc thi',
-              ),
-              BottomNavigationBarItem(
-                icon: Icon(MyIcons.account),
-                label: 'Tài khoản',
-              )
-            ],
-          ),
-        )
-        // ConvexAppBar(
-        //   controller: _tabController,
-        //   onTap: (index) {
-        //     _mainPageController.jumpToPage(index);
-        //   },
-        //   elevation: 20,
-        //   initialActiveIndex: 0,
-        //   activeColor: MyColors.grey,
-        //   backgroundColor: MyColors.black,
-        //   style: TabStyle.react,
-        //   color: MyColors.grey,
-        //   gradient: const LinearGradient(colors: [MyColors.white, MyColors.white]),
-        //   items: const [
-        //     TabItem(
-        //       icon: MyIcons.house,
-        //       // activeIcon: Icon(MyIcons.house),
-        //     ),
-        //     TabItem(
-        //       icon: MyIcons.course,
-        //       // activeIcon: Icon(MyIcons.course),
-        //     ),
-        //     TabItem(
-        //       icon: MyIcons.group,
-        //       // activeIcon: Icon(MyIcons.group),
-        //     ),
-        //     TabItem(
-        //       icon: MyIcons.contest,
-        //       // activeIcon: Icon(MyIcons.contest),
-        //     ),
-        //     TabItem(
-        //       icon: MyIcons.account,
-        //       // activeIcon: Icon(MyIcons.account),
-        //     ),
-        //   ],
-        // ),
-        );
+        bottomNavigationBar: BottomNavigationBar(
+          unselectedLabelStyle: MyTextStyles.content12MediumBlackSW,
+          selectedLabelStyle: MyTextStyles.content12MediumBlackSW,
+          iconSize: MySizes.size20SW,
+          backgroundColor: MyColors.white,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: MyColors.grey,
+          onTap: (index) {
+            Provider.of<BottomBarController>(context, listen: false)
+                .getPageController
+                .jumpToPage(index);
+            // _pageController.jumpToPage(index);
+          },
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _index,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(MyIcons.house),
+              label: 'Trang chủ',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(MyIcons.course),
+              label: 'Khóa học',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(MyIcons.group),
+              label: 'Nhóm lớp',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(MyIcons.contest),
+              label: 'Cuộc thi',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(MyIcons.account),
+              label: 'Tài khoản',
+            )
+          ],
+        ));
   }
 }

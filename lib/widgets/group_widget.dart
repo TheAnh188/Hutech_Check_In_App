@@ -13,7 +13,7 @@ class GroupWidget extends StatefulWidget {
 
 class GroupWidgetState extends State<GroupWidget> {
   void onTapListTile(String? route) {
-    if (route == '/detail_group') {
+    if (route == '/detail_group' || route == '/notification') {
       Navigator.pushReplacementNamed(context, '/detail_group',
           arguments: widget.subject);
     } else {

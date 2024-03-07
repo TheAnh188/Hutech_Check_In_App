@@ -9,7 +9,6 @@ import 'package:hutech_check_in_app/widgets/back_arrow_button.dart';
 import 'package:hutech_check_in_app/widgets/category.dart';
 import 'package:hutech_check_in_app/widgets/ranking_list_tile.dart';
 import 'package:hutech_check_in_app/widgets/ranking_widget.dart';
-import 'package:provider/provider.dart';
 
 class DetailContestPage extends StatefulWidget {
   const DetailContestPage({super.key});
@@ -107,8 +106,8 @@ class _DetailContestPageState extends State<DetailContestPage> {
                   SizedBox(height: MySizes.size15SW),
                   _selectedCategory == 0
                       ? Column(
-                          children: assignmentWidgets(
-                              Provider.of<AssignmentList>(context).generate()),
+                          children:
+                              assignmentWidgets(AssignmentList().generate()),
                         )
                       : Column(
                           children: [

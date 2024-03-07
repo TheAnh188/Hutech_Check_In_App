@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Contest {
   String _title = '';
   bool _isEnrolled = false;
@@ -22,14 +20,13 @@ class Contest {
   }
 }
 
-class ContestList extends ChangeNotifier {
+class ContestList {
   List<Contest> _list = [];
 
   get getList => _list;
 
   set setList(value) {
     _list = value;
-    notifyListeners();
   }
 
   final List<String> _contests = [

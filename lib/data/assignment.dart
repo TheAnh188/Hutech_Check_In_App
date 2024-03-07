@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class Assignment {
   String _title = '';
   String _correctQuantity = '';
@@ -16,14 +14,13 @@ class Assignment {
   }
 }
 
-class AssignmentList extends ChangeNotifier {
+class AssignmentList {
   List<Assignment> _list = [];
 
   get getList => _list;
 
   set setList(value) {
     _list = value;
-    notifyListeners();
   }
 
   final List<String> _assignmentTitles = [

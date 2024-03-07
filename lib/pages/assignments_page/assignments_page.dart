@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hutech_check_in_app/data/assignment.dart';
-import 'package:hutech_check_in_app/data/notification_check.dart';
+import 'package:hutech_check_in_app/data/notification.dart';
 import 'package:hutech_check_in_app/data/subject.dart';
 import 'package:hutech_check_in_app/utils/icons.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
@@ -73,6 +73,9 @@ class _AssignmentsPageState extends State<AssignmentsPage>
 
   @override
   Widget build(BuildContext context) {
+    List<Notificationn> list =
+        NotificationList().generate(SubjectList().initEnrolledSubjects());
+
     Subject subject = ModalRoute.of(context)?.settings.arguments as Subject;
     return Scaffold(
       key: key,
@@ -306,30 +309,11 @@ class _AssignmentsPageState extends State<AssignmentsPage>
                                             physics:
                                                 const BouncingScrollPhysics(),
                                             child: Column(
-                                                children: texts(
-                                                    Provider.of<NotificationList>(
-                                                            context)
-                                                        .generate(4),
-                                                    MySizes.size10SW)
-                                                // [
-                                                // Text(
-                                                //   'Các bạn nhớ hoàn thành bài tập đúng hạn nhé!!',
-                                                //   style: MyTextStyles
-                                                //       .content18MediumBlackSW,
-                                                // ),
-                                                // Text(
-                                                //   'Tuần sau các bạn sẽ một bài kiểm tra cuối kỳ!! Cả lớp nhớ đến lớp đúng giờ!!',
-                                                //   style: MyTextStyles
-                                                //       .content18MediumBlackSW,
-                                                // ),
-                                                // ],
-                                                ),
+                                              children:
+                                                  texts(list, MySizes.size10SW),
+                                            ),
                                           )
-                                        : texts(
-                                            Provider.of<NotificationList>(
-                                                    context)
-                                                .generate(4),
-                                            0)[0],
+                                        : texts(list, 0)[0],
                                   )
                                 ],
                               ),
@@ -339,8 +323,8 @@ class _AssignmentsPageState extends State<AssignmentsPage>
                       ),
                       SizedBox(height: MySizes.size30SW),
                       Column(
-                        children: assignmentWidgets(
-                            Provider.of<AssignmentList>(context).generate()),
+                        children:
+                            assignmentWidgets(AssignmentList().generate()),
                       ),
                     ],
                   ),

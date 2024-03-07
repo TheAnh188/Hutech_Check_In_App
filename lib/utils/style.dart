@@ -304,6 +304,11 @@ class MyTextStyles {
     fontFamily: 'Roboto-Regular',
     fontSize: MySizes.size16,
   );
+  static TextStyle content15RegularBlack = TextStyle(
+    color: MyColors.black,
+    fontFamily: 'Roboto-Regular',
+    fontSize: MySizes.size15SW,
+  );
   static TextStyle content22RegularBlack = TextStyle(
     color: MyColors.black,
     fontFamily: 'Roboto-Regular',

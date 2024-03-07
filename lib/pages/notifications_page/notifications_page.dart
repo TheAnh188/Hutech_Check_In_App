@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:hutech_check_in_app/data/notification_check.dart';
+import 'package:hutech_check_in_app/data/bottom_bar_controller.dart';
+import 'package:hutech_check_in_app/data/drawer_check.dart';
+import 'package:hutech_check_in_app/data/notification.dart';
 import 'package:hutech_check_in_app/data/subject.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
 import 'package:hutech_check_in_app/widgets/back_arrow_button.dart';
@@ -16,10 +20,9 @@ class NotificationsPage extends StatefulWidget {
 class _NotificationsPageState extends State<NotificationsPage> {
   @override
   Widget build(BuildContext context) {
-    List list = Provider.of<NotificationList>(context, listen: false).generate(
-        Provider.of<SubjectList>(context, listen: false)
-            .initEnrolledSubjects()
-            .length);
+    String? route = ModalRoute.of(context)?.settings.name;
+    List<Notificationn> list = Provider.of<NotificationList>(context)
+        .generate(Provider.of<SubjectList>(context).initEnrolledSubjects());
     return Scaffold(
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
@@ -49,19 +52,28 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     .initEnrolledSubjects()
                     .length,
                 itemBuilder: (context, index) {
-                  Provider.of<NotificationList>(context).generate(
-                      Provider.of<SubjectList>(context)
-                          .initEnrolledSubjects()
-                          .length);
                   return GestureDetector(
                     onTap: () {
+                      Provider.of<BottomBarController>(context, listen: false)
+                          .getPageController
+                          .jumpToPage(2);
                       setState(() {
+                        Provider.of<DrawerCheck>(context, listen: false)
+                            .setIsChecked = true;
                         list[index].setIsChecked = true;
+                      });
+                      Timer.periodic(const Duration(milliseconds: 350),
+                          (timer) {
+                        list[index]
+                            .getSubject
+                            .getKey
+                            .currentState
+                            ?.onTapListTile(route);
+                        timer.cancel();
                       });
                     },
                     child: NotificationListTile(
-                      subject: Provider.of<SubjectList>(context)
-                          .initEnrolledSubjects()[index],
+                      subject: list[index].getSubject,
                       index: list[index].getIsChecked,
                     ),
                   );

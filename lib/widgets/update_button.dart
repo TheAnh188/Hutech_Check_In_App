@@ -22,7 +22,7 @@ class _UpdateButtonState extends State<UpdateButton> {
       AwesomeDialog(
         body: SizedBox(
           child: Text(
-            'Thông tin không chính xác!!',
+            'Thông tin không hợp lệ!!',
             style: MyTextStyles.content20MediumBlackSW,
           ),
         ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_regex/flutter_regex.dart';
 import 'package:hutech_check_in_app/data/password.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
 import 'package:hutech_check_in_app/widgets/back_arrow_button.dart';
@@ -46,7 +47,8 @@ class _PasswordUpdatePageState extends State<PasswordUpdatePage> {
   bool checkInfo() {
     if (_newPasswordController.text == _retypedPasswordController.text &&
         _passwordController.text ==
-            Provider.of<Password>(context, listen: false).getPassword) {
+            Provider.of<Password>(context, listen: false).getPassword &&
+        _passwordController.text.isPasswordEasy()) {
       setState(() {
         _checkInfo = true;
       });
@@ -82,18 +84,23 @@ class _PasswordUpdatePageState extends State<PasswordUpdatePage> {
                 controller: _passwordController,
                 hintText: 'Nhập mật khẩu hiện tại',
                 numberKeyboard: false,
+                obscureText: true,
               ),
               SizedBox(height: MySizes.size20SW),
               UpdateTextField(
                 controller: _newPasswordController,
                 hintText: 'Nhập mật khẩu mới',
                 numberKeyboard: false,
+                obscureText: true,
+                toolTipText: 'Mật khẩu chứa ít nhất 8 kí tự',
               ),
               SizedBox(height: MySizes.size20SW),
               UpdateTextField(
                 controller: _retypedPasswordController,
                 hintText: 'Xác nhận mật khẩu',
                 numberKeyboard: false,
+                obscureText: true,
+                toolTipText: 'Mật khẩu chứa ít nhất 8 kí tự',
               ),
               SizedBox(height: MySizes.size20SW),
               UpdateButton(

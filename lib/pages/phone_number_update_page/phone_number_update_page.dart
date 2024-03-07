@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_regex/flutter_regex.dart';
 import 'package:hutech_check_in_app/data/phone_number.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
 import 'package:hutech_check_in_app/widgets/back_arrow_button.dart';
@@ -15,16 +18,37 @@ class PhoneNumberUpdatePage extends StatefulWidget {
 
 class _PhoneNumberUpdatePageState extends State<PhoneNumberUpdatePage> {
   late TextEditingController _controller;
+  late Timer _timer;
+  late bool _checkInfo;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
+
+    _timer = Timer.periodic(const Duration(seconds: 2), (timer) {
+      checkInfo();
+    });
+  }
+
+  bool checkInfo() {
+    if (_controller.text.isPhone()) {
+      setState(() {
+        _checkInfo = true;
+      });
+      return _checkInfo;
+    } else {
+      setState(() {
+        _checkInfo = false;
+      });
+      return _checkInfo;
+    }
   }
 
   @override
   void dispose() {
     super.dispose();
+    _timer.cancel();
     _controller.dispose();
   }
 
@@ -51,12 +75,16 @@ class _PhoneNumberUpdatePageState extends State<PhoneNumberUpdatePage> {
                 controller: _controller,
                 hintText: 'Nhập số điện thoại mới',
                 numberKeyboard: true,
+                obscureText: false,
               ),
               SizedBox(height: MySizes.size20SW),
               UpdateButton(
+                sucess: checkInfo(),
                 update: () {
-                  Provider.of<PhoneNumber>(context, listen: false)
-                      .setPhoneNumber(_controller.text);
+                  checkInfo()
+                      ? Provider.of<PhoneNumber>(context, listen: false)
+                          .setPhoneNumber(_controller.text)
+                      : null;
                 },
               ),
             ],

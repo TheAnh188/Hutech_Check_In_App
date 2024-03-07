@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hutech_check_in_app/data/contest.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
 import 'package:hutech_check_in_app/widgets/contest_widget.dart';
-import 'package:provider/provider.dart';
 
 class ContestsPage extends StatefulWidget {
   const ContestsPage({super.key});
@@ -44,8 +43,8 @@ class _ContestsPageState extends State<ContestsPage> {
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             ),
             SliverList(
-                delegate: SliverChildListDelegate(contestWidgets(
-                    Provider.of<ContestList>(context).initContests()))),
+                delegate: SliverChildListDelegate(
+                    contestWidgets(ContestList().initContests()))),
           ],
         ),
       ),

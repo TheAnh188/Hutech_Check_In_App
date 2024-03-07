@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:hutech_check_in_app/data/subject.dart';
 
 class Notificationn extends ChangeNotifier {
   bool _isChecked = false;
   bool _isSeen = false;
   String _content = '';
+  Subject _subject = Subject();
 
   get getIsChecked => _isChecked;
   get getIsSeen => _isSeen;
   get getContent => _content;
+  get getSubject => _subject;
 
   set setIsChecked(bool value) {
     _isChecked = value;
@@ -21,6 +24,11 @@ class Notificationn extends ChangeNotifier {
 
   set setContent(String value) {
     _content = value;
+    notifyListeners();
+  }
+
+  set setSubject(Subject value) {
+    _subject = value;
     notifyListeners();
   }
 }
@@ -42,11 +50,12 @@ class NotificationList extends ChangeNotifier {
     'Tuần sau mình sẽ học bù vào chiều T7 phòng E1.10.1',
   ];
 
-  List<Notificationn> generate(int n) {
+  List<Notificationn> generate(List<Subject> list) {
     if (_list.isEmpty) {
-      for (int i = 0; i < n; i++) {
+      for (int i = 0; i < list.length; i++) {
         Notificationn notificationCheck = Notificationn();
         notificationCheck.setContent = contents[i];
+        notificationCheck.setSubject = list[i];
         _list.add(notificationCheck);
       }
     }
