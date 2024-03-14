@@ -54,9 +54,11 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      Provider.of<BottomBarController>(context, listen: false)
-                          .getPageController
-                          .jumpToPage(2);
+                      if (context.mounted) {
+                        Provider.of<BottomBarController>(context, listen: false)
+                            .getPageController
+                            .jumpToPage(2);
+                      }
                       setState(() {
                         Provider.of<DrawerCheck>(context, listen: false)
                             .setIsChecked = true;

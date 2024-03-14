@@ -64,6 +64,7 @@ class _PasswordUpdatePageState extends State<PasswordUpdatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text(

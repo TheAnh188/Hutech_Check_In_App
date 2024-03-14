@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hutech_check_in_app/animation/loading.dart';
 import 'package:hutech_check_in_app/utils/icons.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
 import 'package:hutech_check_in_app/widgets/account_list_tile.dart';
@@ -11,6 +12,14 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  void _onTap() async {
+    await loading();
+    await dissmis();
+    if (context.mounted) {
+      Navigator.pushNamed(context, '/info_update');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,9 +57,7 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/info_update');
-                        },
+                        onTap: _onTap,
                         child: Container(
                           padding: EdgeInsets.fromLTRB(
                               MySizes.size10SW,

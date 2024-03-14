@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hutech_check_in_app/animation/loading.dart';
 import 'package:hutech_check_in_app/utils/icons.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
 
@@ -18,8 +19,12 @@ class InforUpdateCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: enable
-          ? () {
-              Navigator.pushNamed(context, route);
+          ? () async {
+              await loading();
+              await dissmis();
+              if (context.mounted) {
+                Navigator.pushNamed(context, route);
+              }
             }
           : null,
       child: Card(

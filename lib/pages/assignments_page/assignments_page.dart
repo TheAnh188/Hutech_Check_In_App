@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hutech_check_in_app/data/assignment.dart';
 import 'package:hutech_check_in_app/data/notification.dart';
 import 'package:hutech_check_in_app/data/subject.dart';
+import 'package:hutech_check_in_app/pages/loading_page/loading_assignment_page.dart';
 import 'package:hutech_check_in_app/utils/icons.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
 import 'package:hutech_check_in_app/widgets/assignment_list_tile.dart';
@@ -21,11 +24,14 @@ class _AssignmentsPageState extends State<AssignmentsPage>
   var key = GlobalKey<ScaffoldState>();
   late AnimationController _clickController;
   late Animation<double> _clickAnimation;
+  late bool _loading;
+  late Timer _loadingTimer;
 
   @override
   void initState() {
     super.initState();
-
+    _loading = true;
+    _loadingg();
     _clickController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 200),
@@ -52,8 +58,28 @@ class _AssignmentsPageState extends State<AssignmentsPage>
     }).toList();
   }
 
+  @override
+  void dispose() {
+    _loadingTimer.cancel();
+    super.dispose();
+  }
+
+  void _loadingg() {
+    _loadingTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      setState(() {
+        _loading = false;
+      });
+      timer.cancel();
+    });
+  }
+
   Future<void> _refresh() {
-    return Future.delayed(const Duration(seconds: 1));
+    return Future.delayed(const Duration(seconds: 1), () {
+      // setState(() {
+      //   _loading = true;
+      // });
+      // _loadingg();
+    });
   }
 
   List<Widget> texts(
@@ -89,7 +115,9 @@ class _AssignmentsPageState extends State<AssignmentsPage>
         color: MyColors.white,
         onRefresh: _refresh,
         child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: _loading
+              ? const NeverScrollableScrollPhysics()
+              : const BouncingScrollPhysics(),
           slivers: [
             SliverAppBar(
               centerTitle: true,
@@ -191,143 +219,149 @@ class _AssignmentsPageState extends State<AssignmentsPage>
             SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  Column(
-                    children: [
-                      // Container(
-                      //   margin:
-                      //       EdgeInsets.symmetric(horizontal: MySizes.size20SW),
-                      //   height: MySizes.size120SW,
-                      //   padding: EdgeInsets.only(
-                      //       left: MySizes.size10SW,
-                      //       right: MySizes.size10SW,
-                      //       bottom: MySizes.size20SW),
-                      //   width: double.infinity,
-                      //   decoration: BoxDecoration(
-                      //     borderRadius: BorderRadius.circular(MySizes.size15SW),
-                      //     color: Colors.lightBlueAccent,
-                      //   ),
-                      //   child: Column(
-                      //     mainAxisAlignment: MainAxisAlignment.end,
-                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                      //     children: [
-                      //       Text(
-                      //         subject.getTitle,
-                      //         overflow: TextOverflow.ellipsis,
-                      //         style: MyTextStyles.content20MediumBlackSW,
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-                      AnimatedBuilder(
-                        animation: _clickController,
-                        builder: (context, child) => Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: MySizes.size20SW),
-                          child: GestureDetector(
-                            onTap: () {
-                              if (_clickController.status ==
-                                      AnimationStatus.forward ||
-                                  _clickController.status ==
-                                      AnimationStatus.completed) {
-                                _clickController.reverse();
-                              } else {
-                                _clickController.forward();
-                              }
-                            },
-                            child: Container(
-                              height: _clickAnimation.value,
-                              padding: EdgeInsets.all(MySizes.size20SW),
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: MyColors.lightGreyAccent,
-                                    blurRadius: MySizes.size10SW,
-                                    offset: Offset(0, MySizes.size10SW),
+                  _loading
+                      ? const LoadingAssignmentPage()
+                      : Column(
+                          children: [
+                            // Container(
+                            //   margin:
+                            //       EdgeInsets.symmetric(horizontal: MySizes.size20SW),
+                            //   height: MySizes.size120SW,
+                            //   padding: EdgeInsets.only(
+                            //       left: MySizes.size10SW,
+                            //       right: MySizes.size10SW,
+                            //       bottom: MySizes.size20SW),
+                            //   width: double.infinity,
+                            //   decoration: BoxDecoration(
+                            //     borderRadius: BorderRadius.circular(MySizes.size15SW),
+                            //     color: Colors.lightBlueAccent,
+                            //   ),
+                            //   child: Column(
+                            //     mainAxisAlignment: MainAxisAlignment.end,
+                            //     crossAxisAlignment: CrossAxisAlignment.start,
+                            //     children: [
+                            //       Text(
+                            //         subject.getTitle,
+                            //         overflow: TextOverflow.ellipsis,
+                            //         style: MyTextStyles.content20MediumBlackSW,
+                            //       ),
+                            //     ],
+                            //   ),
+                            // ),
+                            AnimatedBuilder(
+                              animation: _clickController,
+                              builder: (context, child) => Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: MySizes.size20SW),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (_clickController.status ==
+                                            AnimationStatus.forward ||
+                                        _clickController.status ==
+                                            AnimationStatus.completed) {
+                                      _clickController.reverse();
+                                    } else {
+                                      _clickController.forward();
+                                    }
+                                  },
+                                  child: Container(
+                                    height: _clickAnimation.value,
+                                    padding: EdgeInsets.all(MySizes.size20SW),
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: MyColors.lightGreyAccent,
+                                          blurRadius: MySizes.size10SW,
+                                          offset: Offset(0, MySizes.size10SW),
+                                        ),
+                                      ],
+                                      color: MyColors.white,
+                                      borderRadius: BorderRadius.circular(
+                                          MySizes.size20SW),
+                                      border: Border.all(
+                                        color: MyColors.lightGrey,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              '7 giờ trước',
+                                              style: MyTextStyles
+                                                  .content14MediumGreySW,
+                                              maxLines: 1,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  _clickController.status ==
+                                                              AnimationStatus
+                                                                  .forward ||
+                                                          _clickController
+                                                                  .status ==
+                                                              AnimationStatus
+                                                                  .completed
+                                                      ? 'Ẩn bớt'
+                                                      : 'Xem tất cả',
+                                                  style: MyTextStyles
+                                                      .content14MediumBleSW,
+                                                  maxLines: 1,
+                                                ),
+                                                SizedBox(
+                                                    width: MySizes.size10SW),
+                                                CircleAvatar(
+                                                  backgroundColor:
+                                                      MyColors.blue,
+                                                  radius: MySizes.size15SW,
+                                                  child: Text(
+                                                    Provider.of<Notificationn>(
+                                                      context,
+                                                    ).getIsSeen
+                                                        ? '0'
+                                                        : '4',
+                                                    style: MyTextStyles
+                                                        .content15MediumWhiteSW,
+                                                  ),
+                                                )
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                        SizedBox(height: MySizes.size10SW),
+                                        Expanded(
+                                          child: _clickController.status ==
+                                                      AnimationStatus.forward ||
+                                                  _clickController.status ==
+                                                      AnimationStatus
+                                                          .completed ||
+                                                  _clickController.status ==
+                                                      AnimationStatus.reverse
+                                              ? SingleChildScrollView(
+                                                  physics:
+                                                      const BouncingScrollPhysics(),
+                                                  child: Column(
+                                                    children: texts(
+                                                        list, MySizes.size10SW),
+                                                  ),
+                                                )
+                                              : texts(list, 0)[0],
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ],
-                                color: MyColors.white,
-                                borderRadius:
-                                    BorderRadius.circular(MySizes.size20SW),
-                                border: Border.all(
-                                  color: MyColors.lightGrey,
                                 ),
                               ),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        '7 giờ trước',
-                                        style:
-                                            MyTextStyles.content14MediumGreySW,
-                                        maxLines: 1,
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text(
-                                            _clickController.status ==
-                                                        AnimationStatus
-                                                            .forward ||
-                                                    _clickController.status ==
-                                                        AnimationStatus
-                                                            .completed
-                                                ? 'Ẩn bớt'
-                                                : 'Xem tất cả',
-                                            style: MyTextStyles
-                                                .content14MediumBleSW,
-                                            maxLines: 1,
-                                          ),
-                                          SizedBox(width: MySizes.size10SW),
-                                          CircleAvatar(
-                                            backgroundColor: MyColors.blue,
-                                            radius: MySizes.size15SW,
-                                            child: Text(
-                                              Provider.of<Notificationn>(
-                                                context,
-                                              ).getIsSeen
-                                                  ? '0'
-                                                  : '4',
-                                              style: MyTextStyles
-                                                  .content15MediumWhiteSW,
-                                            ),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(height: MySizes.size10SW),
-                                  Expanded(
-                                    child: _clickController.status ==
-                                                AnimationStatus.forward ||
-                                            _clickController.status ==
-                                                AnimationStatus.completed ||
-                                            _clickController.status ==
-                                                AnimationStatus.reverse
-                                        ? SingleChildScrollView(
-                                            physics:
-                                                const BouncingScrollPhysics(),
-                                            child: Column(
-                                              children:
-                                                  texts(list, MySizes.size10SW),
-                                            ),
-                                          )
-                                        : texts(list, 0)[0],
-                                  )
-                                ],
-                              ),
                             ),
-                          ),
+                            SizedBox(height: MySizes.size30SW),
+                            Column(
+                              children: assignmentWidgets(
+                                  AssignmentList().generate()),
+                            ),
+                          ],
                         ),
-                      ),
-                      SizedBox(height: MySizes.size30SW),
-                      Column(
-                        children:
-                            assignmentWidgets(AssignmentList().generate()),
-                      ),
-                    ],
-                  ),
                 ],
               ),
             ),

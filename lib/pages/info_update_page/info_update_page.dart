@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hutech_check_in_app/animation/loading.dart';
 import 'package:hutech_check_in_app/data/email.dart';
 import 'package:hutech_check_in_app/data/phone_number.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
@@ -14,6 +15,14 @@ class InfoUpdatePage extends StatefulWidget {
 }
 
 class _InfoUpdatePageState extends State<InfoUpdatePage> {
+  void _onTap() async {
+    await loading();
+    await dissmis();
+    if (context.mounted) {
+      Navigator.pushNamed(context, '/password_update');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,9 +86,7 @@ class _InfoUpdatePageState extends State<InfoUpdatePage> {
               ),
               SizedBox(height: MySizes.size20SW),
               GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, '/password_update');
-                },
+                onTap: _onTap,
                 child: Container(
                   height: MySizes.size45SW,
                   width: double.infinity,

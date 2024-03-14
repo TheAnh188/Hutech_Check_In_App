@@ -34,6 +34,7 @@ class _UpdateButtonState extends State<UpdateButton> {
             horizontal: MySizes.size20SW, vertical: MySizes.size10SW),
         btnCancel: GestureDetector(
           onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
             Navigator.pop(context);
           },
           child: Container(

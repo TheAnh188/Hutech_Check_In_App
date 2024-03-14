@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hutech_check_in_app/animation/fade_animation.dart';
+import 'package:hutech_check_in_app/animation/loading.dart';
 import 'package:hutech_check_in_app/utils/icons.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
 import 'package:hutech_check_in_app/widgets/group_drawer.dart';
@@ -20,6 +21,17 @@ class _CheckInPageState extends State<CheckInPage> {
   void initState() {
     super.initState();
     _isPressed = false;
+  }
+
+  void _onTap() async {
+    await loading();
+    await dissmis();
+    if (context.mounted) {
+      Navigator.pushNamed(context, '/qr');
+    }
+    setState(() {
+      _isPressed = true;
+    });
   }
 
   @override
@@ -75,14 +87,7 @@ class _CheckInPageState extends State<CheckInPage> {
                 margin: EdgeInsets.symmetric(horizontal: MySizes.size30SW),
                 height: MySizes.size50SW,
                 child: ElevatedButton(
-                  onPressed: !_isPressed
-                      ? () {
-                          Navigator.pushNamed(context, '/qr');
-                          setState(() {
-                            _isPressed = true;
-                          });
-                        }
-                      : null,
+                  onPressed: !_isPressed ? _onTap : null,
                   style: ElevatedButton.styleFrom(
                     splashFactory: NoSplash.splashFactory,
                     backgroundColor: MyColors.blue,

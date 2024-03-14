@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hutech_check_in_app/animation/loading.dart';
 import 'package:hutech_check_in_app/data/subject.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
 
@@ -12,17 +13,25 @@ class GroupWidget extends StatefulWidget {
 }
 
 class GroupWidgetState extends State<GroupWidget> {
-  void onTapListTile(String? route) {
+  void onTapListTile(String? route) async {
     if (route == '/detail_group' || route == '/notification') {
-      Navigator.pushReplacementNamed(context, '/detail_group',
-          arguments: widget.subject);
+      await loading();
+      await dissmis();
+      if (context.mounted) {
+        Navigator.pushReplacementNamed(context, '/detail_group',
+            arguments: widget.subject);
+      }
     } else {
       onTap();
     }
   }
 
-  void onTap() {
-    Navigator.pushNamed(context, '/detail_group', arguments: widget.subject);
+  void onTap() async {
+    await loading();
+    await dissmis();
+    if (context.mounted) {
+      Navigator.pushNamed(context, '/detail_group', arguments: widget.subject);
+    }
   }
 
   @override

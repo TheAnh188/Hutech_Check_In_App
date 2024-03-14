@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hutech_check_in_app/animation/loading.dart';
 import 'package:hutech_check_in_app/data/contest.dart';
 import 'package:hutech_check_in_app/utils/icons.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
@@ -10,8 +11,12 @@ class ContestWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, '/detail_contest', arguments: contest);
+      onTap: () async {
+        await loading();
+        await dissmis();
+        if (context.mounted) {
+          Navigator.pushNamed(context, '/detail_contest', arguments: contest);
+        }
       },
       child: Card(
         shape: RoundedRectangleBorder(

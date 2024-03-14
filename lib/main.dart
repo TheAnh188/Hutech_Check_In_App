@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hutech_check_in_app/data/bottom_bar_controller.dart';
 import 'package:hutech_check_in_app/data/email.dart';
@@ -23,6 +24,25 @@ void main() {
   runApp(const MyApp());
 }
 
+void configLoading() {
+  EasyLoading.instance
+    ..indicatorType = EasyLoadingIndicatorType.dualRing
+    ..indicatorSize = MySizes.size40SW
+    ..radius = MySizes.size10SW
+    ..lineWidth = MySizes.size5SW
+    ..animationDuration = const Duration(milliseconds: 300)
+    ..maskType = EasyLoadingMaskType.clear
+    ..userInteractions = false
+    ..dismissOnTap = false
+    ..loadingStyle = EasyLoadingStyle.dark
+    ..fontSize = MySizes.size15SW
+    ..contentPadding = EdgeInsets.symmetric(
+        vertical: MySizes.size15SW, horizontal: MySizes.size20SW)
+    ..textPadding = EdgeInsets.only(bottom: MySizes.size10SW)
+    ..textStyle = TextStyle(fontSize: MySizes.size20SW, color: MyColors.white)
+    ..animationStyle = EasyLoadingAnimationStyle.offset;
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -33,6 +53,7 @@ class MyApp extends StatelessWidget {
         designSize: Size(size.width, size.height),
         splitScreenMode: true,
         minTextAdapt: true);
+    configLoading();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -64,6 +85,7 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        builder: EasyLoading.init(),
         initialRoute: '/',
         onGenerateRoute: MyRouter.onGenerateRoute,
         theme: ThemeData(
@@ -79,8 +101,8 @@ class MyApp extends StatelessWidget {
         ),
         title: 'Hutech Check In',
         debugShowCheckedModeBanner: false,
-        home: const CheckInApp(),
-        // home: const Login(),
+        // home: const CheckInApp(),
+        home: const Login(),
       ),
     );
   }

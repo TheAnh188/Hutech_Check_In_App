@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:hutech_check_in_app/animation/loading.dart';
 import 'package:hutech_check_in_app/data/subject.dart';
 import 'package:hutech_check_in_app/data/drawer_check.dart';
 import 'package:hutech_check_in_app/utils/icons.dart';
@@ -36,7 +37,7 @@ class _GroupDrawerState extends State<GroupDrawer> {
         height: MySizes.size55SW,
         child: ListTile(
           minVerticalPadding: MySizes.size5SW,
-          onTap: () {
+          onTap: () async {
             String? route = ModalRoute.of(context)?.settings.name;
             Provider.of<DrawerCheck>(context, listen: false).setIsChecked =
                 isChecked;
@@ -44,7 +45,7 @@ class _GroupDrawerState extends State<GroupDrawer> {
             if (Provider.of<Subject>(context, listen: false).getTitle !=
                 index.getTitle) {
               changeSubject(index.getTitle);
-              Timer.periodic(const Duration(milliseconds: 350), (timer) {
+              Timer.periodic(const Duration(milliseconds: 100), (timer) {
                 index.getKey.currentState?.onTapListTile(route);
                 timer.cancel();
               });
@@ -60,10 +61,14 @@ class _GroupDrawerState extends State<GroupDrawer> {
     }).toList();
   }
 
-  void closeDrawer(bool value) {
-    Provider.of<DrawerCheck>(context, listen: false).setIsChecked = value;
-    Navigator.pop(context);
-    Navigator.maybePop(context);
+  void closeDrawer(bool value) async {
+    if (context.mounted) {
+      Provider.of<DrawerCheck>(context, listen: false).setIsChecked = value;
+      Navigator.pop(context);
+      Navigator.maybePop(context);
+    }
+    await loading();
+    await dissmis();
   }
 
   Color? setColor(bool value) {

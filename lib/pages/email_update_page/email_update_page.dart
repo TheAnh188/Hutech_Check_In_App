@@ -55,6 +55,7 @@ class _EmailUpdatePageState extends State<EmailUpdatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -76,6 +77,7 @@ class _EmailUpdatePageState extends State<EmailUpdatePage> {
                 hintText: 'Nhập email mới',
                 numberKeyboard: false,
                 obscureText: false,
+                toolTipText: 'Nhập đúng định dạng email',
               ),
               SizedBox(height: MySizes.size20SW),
               UpdateButton(

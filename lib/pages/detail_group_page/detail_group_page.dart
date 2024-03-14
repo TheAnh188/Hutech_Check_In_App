@@ -44,35 +44,32 @@ class _DetailGroupPageState extends State<DetailGroupPage> {
         itemCount: _groupPages.length,
         itemBuilder: (context, index) => _groupPages[index],
       ),
-      bottomNavigationBar: SizedBox(
-        height: MySizes.size60SW,
-        child: BottomNavigationBar(
-          unselectedLabelStyle: MyTextStyles.content12MediumBlackSW,
-          selectedLabelStyle: MyTextStyles.content12MediumBlackSW,
-          iconSize: MySizes.size20SW,
-          backgroundColor: MyColors.white,
-          selectedItemColor: MyColors.blue,
-          unselectedItemColor: MyColors.grey,
-          onTap: (index) {
-            _pageController.jumpToPage(index);
-          },
-          type: BottomNavigationBarType.fixed,
-          currentIndex: _index,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.assignment),
-              label: 'Bài tập',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.qrcode),
-              label: 'Điểm danh',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(MyIcons.group),
-              label: 'Thành viên',
-            ),
-          ],
-        ),
+      bottomNavigationBar: BottomNavigationBar(
+        unselectedLabelStyle: MyTextStyles.content12MediumBlackSW,
+        selectedLabelStyle: MyTextStyles.content12MediumBlackSW,
+        iconSize: MySizes.size20SW,
+        backgroundColor: MyColors.white,
+        selectedItemColor: MyColors.blue,
+        unselectedItemColor: MyColors.grey,
+        onTap: (index) {
+          _pageController.jumpToPage(index);
+        },
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _index,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.assignment),
+            label: 'Bài tập',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(FontAwesomeIcons.qrcode),
+            label: 'Điểm danh',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(MyIcons.group),
+            label: 'Thành viên',
+          ),
+        ],
       ),
     );
   }

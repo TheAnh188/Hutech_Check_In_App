@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hutech_check_in_app/animation/fade_animation.dart';
+import 'package:hutech_check_in_app/animation/loading.dart';
 import 'package:hutech_check_in_app/data/bottom_bar_controller.dart';
 import 'package:hutech_check_in_app/utils/icons.dart';
 import 'package:hutech_check_in_app/utils/images.dart';
@@ -30,6 +31,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late bool _isClicked;
   late Timer _timer;
 
+  late AnimationController _scaleController;
+  late Animation<double> _scaleAnimation;
+  late AnimationController _clickController;
+  late Animation<double> _clickAnimation;
+  late bool _visible;
+
   final _items = [
     const ListViewItem(path: Images.pic0, boxFit: BoxFit.cover),
     const ListViewItem(path: Images.pic1, boxFit: BoxFit.cover),
@@ -47,6 +54,38 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _endPoint = false;
     _isClicked = false;
     _autoChangePage();
+
+    _visible = true;
+    _scaleController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1000));
+    _scaleAnimation =
+        Tween<double>(begin: 0.8, end: 1.0).animate(_scaleController)
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              setState(() {
+                _visible = false;
+              });
+              _scaleController.reverse();
+            } else if (status == AnimationStatus.dismissed) {
+              _scaleController.forward();
+              setState(() {
+                _visible = true;
+              });
+            }
+          });
+    _scaleController.forward();
+
+    _clickController = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 200));
+    _clickAnimation =
+        Tween<double>(begin: 1.0, end: 0.97).animate(_clickController)
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              _clickController.reverse();
+            } else if (status == AnimationStatus.dismissed) {
+              Navigator.pushNamed(context, '/detail_contest_home');
+            }
+          });
   }
 
   void _autoChangePage() {
@@ -81,7 +120,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _autoChangePage();
   }
 
-  void hideSnackBar(BuildContext context) {
+  void hideSnackBar() {
     ScaffoldMessenger.of(context).hideCurrentSnackBar();
     setState(() {
       _isClicked = false;
@@ -91,11 +130,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _pageController.dispose();
+    _scaleController.dispose();
     _timer.cancel();
     super.dispose();
   }
 
-  void accessPage(String route, int? index) {
+  void accessPage(String route, int? index) async {
+    hideSnackBar();
+    await loading();
+    await dissmis();
     if (route.isNotEmpty) {
       Timer.periodic(Duration(milliseconds: _isClicked ? 350 : 0), (timer) {
         Navigator.pushNamed(context, route);
@@ -112,7 +155,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         timer.cancel();
       });
     }
-    hideSnackBar(context);
   }
 
   @override
@@ -122,7 +164,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       // backgroundColor: Colors.amber,
       body: GestureDetector(
         onTap: () {
-          hideSnackBar(context);
+          hideSnackBar();
         },
         child: CustomScrollView(
           physics: const BouncingScrollPhysics(),
@@ -201,7 +243,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                           _isClicked = true;
                                         });
                                       } else {
-                                        hideSnackBar(context);
+                                        hideSnackBar();
                                       }
                                     },
                                     icon: Icon(
@@ -351,37 +393,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ],
         ),
       ),
-    );
-  }
-
-  Widget makeColumn({IconData? icon, text}) {
-    return Column(
-      children: [
-        Container(
-            height: MySizes.size65SW,
-            width: MySizes.size65SW,
-            decoration: BoxDecoration(
-              border: Border.all(
-                width: MySizes.size8SW,
-                color: Colors.grey.withOpacity(.2),
-              ),
-              color: MyColors.white,
-              borderRadius: BorderRadius.circular(MySizes.size22SW),
-            ),
-            child: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                icon,
-                color: MyColors.blue,
-                size: 30,
-              ),
-            )),
-        SizedBox(height: MySizes.size10SW),
-        Text(
-          text,
-          style: TextStyle(color: Colors.grey.shade700),
-        )
-      ],
     );
   }
 }

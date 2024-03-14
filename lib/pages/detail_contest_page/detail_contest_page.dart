@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:hutech_check_in_app/animation/fade_animation.dart';
+import 'package:hutech_check_in_app/animation/loading.dart';
 import 'package:hutech_check_in_app/data/assignment.dart';
 import 'package:hutech_check_in_app/data/contest.dart';
+import 'package:hutech_check_in_app/pages/loading_page/loading_contest_page.dart';
 import 'package:hutech_check_in_app/utils/icons.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
 import 'package:hutech_check_in_app/widgets/assignment_list_tile.dart';
@@ -21,6 +24,30 @@ class _DetailContestPageState extends State<DetailContestPage> {
   final List _categories = ['Bài tập', 'Bảng kết quả'];
   final List _icons = [MyIcons.assignment, MyIcons.rank];
   int _selectedCategory = 0;
+  late bool _loading;
+  late Timer _loadingTimer;
+
+  @override
+  void initState() {
+    _loading = true;
+    _loadingg();
+    super.initState();
+  }
+
+  void _loadingg() {
+    _loadingTimer = Timer.periodic(const Duration(seconds: 3), (timer) {
+      setState(() {
+        _loading = false;
+      });
+      timer.cancel();
+    });
+  }
+
+  @override
+  void dispose() {
+    _loadingTimer.cancel();
+    super.dispose();
+  }
 
   List<Widget> assignmentWidgets(
     List<Assignment> list,
@@ -49,7 +76,9 @@ class _DetailContestPageState extends State<DetailContestPage> {
         color: MyColors.white,
         onRefresh: _refresh,
         child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: _loading
+              ? const NeverScrollableScrollPhysics()
+              : const BouncingScrollPhysics(),
           slivers: [
             SliverAppBar(
               centerTitle: true,
@@ -65,44 +94,46 @@ class _DetailContestPageState extends State<DetailContestPage> {
             SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: MySizes.size25SW),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${contest.getTitle}',
-                          style: MyTextStyles.content20MediumBlueSW,
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                        ),
-                        SizedBox(height: MySizes.size15SW),
-                        SizedBox(
-                          height: MySizes.size45SW,
-                          child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: _categories.length,
-                            itemBuilder: (context, index) => FadeAnimation(
-                              0.2,
-                              0,
-                              GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    _selectedCategory = index;
-                                  });
-                                },
-                                child: Category(
-                                  title: _categories[index],
-                                  icon: _icons[index],
-                                  isSelected: index == _selectedCategory,
+                  _loading
+                      ? const LoadingContestPage()
+                      : Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: MySizes.size25SW),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${contest.getTitle}',
+                                style: MyTextStyles.content20MediumBlueSW,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                              SizedBox(height: MySizes.size15SW),
+                              SizedBox(
+                                height: MySizes.size45SW,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: _categories.length,
+                                  itemBuilder: (context, index) =>
+                                      GestureDetector(
+                                    onTap: () async {
+                                      await loading();
+                                      await dissmis();
+                                      setState(() {
+                                        _selectedCategory = index;
+                                      });
+                                    },
+                                    child: Category(
+                                      title: _categories[index],
+                                      icon: _icons[index],
+                                      isSelected: index == _selectedCategory,
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
                   SizedBox(height: MySizes.size15SW),
                   _selectedCategory == 0
                       ? Column(
@@ -121,7 +152,7 @@ class _DetailContestPageState extends State<DetailContestPage> {
                                   lastName: 'Anh',
                                   totalPoint: 210,
                                   ranking: 2,
-                                  color: MyColors.lightGreyAccent,
+                                  color: MyColors.lightBlueAccent,
                                   style: MyTextStyles.content90BoldWhiteSW,
                                 ),
                                 RankingWidget(
@@ -130,7 +161,7 @@ class _DetailContestPageState extends State<DetailContestPage> {
                                   lastName: 'Đoan',
                                   totalPoint: 326,
                                   ranking: 1,
-                                  color: MyColors.greyAccent,
+                                  color: MyColors.lightBlue,
                                   style: MyTextStyles.content100BoldWhiteSW,
                                 ),
                                 RankingWidget(
@@ -139,7 +170,7 @@ class _DetailContestPageState extends State<DetailContestPage> {
                                   lastName: 'Nguyễn',
                                   totalPoint: 204,
                                   ranking: 3,
-                                  color: MyColors.lightGreyAccent,
+                                  color: MyColors.lightBlueAccent,
                                   style: MyTextStyles.content80BoldWhiteSW,
                                 ),
                               ],

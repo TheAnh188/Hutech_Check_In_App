@@ -55,6 +55,7 @@ class _PhoneNumberUpdatePageState extends State<PhoneNumberUpdatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
@@ -76,6 +77,7 @@ class _PhoneNumberUpdatePageState extends State<PhoneNumberUpdatePage> {
                 hintText: 'Nhập số điện thoại mới',
                 numberKeyboard: true,
                 obscureText: false,
+                toolTipText: 'Nhập đúng định dạng SĐT',
               ),
               SizedBox(height: MySizes.size20SW),
               UpdateButton(

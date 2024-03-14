@@ -13,6 +13,11 @@ class DetailAssignmentPage extends StatefulWidget {
 
 class _DetailAssignmentPageState extends State<DetailAssignmentPage> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Assignment assignment =
         ModalRoute.of(context)?.settings.arguments as Assignment;

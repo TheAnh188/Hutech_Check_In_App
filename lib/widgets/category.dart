@@ -17,7 +17,7 @@ class Category extends StatelessWidget {
     return AnimatedContainer(
       alignment: Alignment.center,
       padding: EdgeInsets.symmetric(horizontal: MySizes.size20SW),
-      width: 175,
+      width: MySizes.size175SW,
       duration: const Duration(milliseconds: 100),
       margin: EdgeInsets.only(right: MySizes.size5SW),
       decoration: BoxDecoration(

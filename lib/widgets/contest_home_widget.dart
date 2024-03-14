@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hutech_check_in_app/animation/loading.dart';
 import 'package:hutech_check_in_app/utils/icons.dart';
 import 'package:hutech_check_in_app/utils/images.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
@@ -58,9 +59,17 @@ class _ContestHomeWidgetState extends State<ContestHomeWidget>
             if (status == AnimationStatus.completed) {
               _clickController.reverse();
             } else if (status == AnimationStatus.dismissed) {
-              Navigator.pushNamed(context, '/detail_contest_home');
+              _onTap();
             }
           });
+  }
+
+  void _onTap() async {
+    await loading();
+    await dissmis();
+    if (context.mounted) {
+      Navigator.pushNamed(context, '/detail_contest_home');
+    }
   }
 
   @override
@@ -74,36 +83,41 @@ class _ContestHomeWidgetState extends State<ContestHomeWidget>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        SizedBox(height: MySizes.size2SW),
         ScaleTransition(
           scale: _clickAnimation,
-          child: Transform.translate(
-            offset: const Offset(-15, 0),
-            child: TextButton.icon(
-              onPressed: () {
-                _clickController.forward();
-              },
-              style: const ButtonStyle(splashFactory: NoSplash.splashFactory),
-              icon: ScaleTransition(
-                scale: _scaleAnimation,
-                child: AnimatedOpacity(
-                  duration: const Duration(milliseconds: 1000),
-                  opacity: _visible ? 1.0 : 0.4,
-                  child: Icon(
-                    MyIcons.fire,
-                    color: MyColors.darkRed,
-                    size: MySizes.size40SW,
+          child: GestureDetector(
+            onTap: () {
+              _clickController.forward();
+            },
+            child: Row(
+              children: [
+                ScaleTransition(
+                  scale: _scaleAnimation,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 1000),
+                    opacity: _visible ? 1.0 : 0.4,
+                    child: Icon(
+                      MyIcons.fire,
+                      color: MyColors.darkRed,
+                      size: MySizes.size40SW,
+                    ),
                   ),
                 ),
-              ),
-              label: Text(
-                widget.text,
-                style: MyTextStyles.content15MediumDarkRedSW,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
+                SizedBox(width: MySizes.size8SW),
+                Expanded(
+                  child: Text(
+                    widget.text,
+                    style: MyTextStyles.content15MediumDarkRedSW,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ),
+              ],
             ),
           ),
         ),
+        SizedBox(height: MySizes.size5SW),
         AspectRatio(
           aspectRatio: widget.path == Images.logo ? 16 / 6.5 : 16 / 9,
           child: ListViewItem(

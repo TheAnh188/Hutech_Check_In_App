@@ -1,5 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:hutech_check_in_app/animation/loading.dart';
 import 'package:hutech_check_in_app/utils/images.dart';
 import 'package:hutech_check_in_app/utils/style.dart';
 
@@ -21,20 +22,39 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
     _hidePassword = true;
   }
 
+  void _login() async {
+    FocusScope.of(context).requestFocus(FocusNode());
+    await loading();
+    await dissmis();
+    if (context.mounted) {
+      Navigator.pushReplacementNamed(context, '/main');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool keyBoardOpened = MediaQuery.of(context).viewInsets.bottom != 0;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Container(
-            margin: EdgeInsets.only(top: MySizes.size40SW),
-            height: MySizes.size300SW,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage(Images.backgroundlogin), fit: BoxFit.cover),
-            ),
-          ),
+          !keyBoardOpened
+              ? Container(
+                  margin: EdgeInsets.only(top: MySizes.size40SW),
+                  height: MySizes.size300SW,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(Images.backgroundlogin),
+                        fit: BoxFit.cover),
+                  ),
+                )
+              : Padding(
+                  padding: EdgeInsets.only(bottom: MySizes.size10SW),
+                  child: SizedBox(
+                      height: MySizes.size160SW,
+                      child: Image.asset(Images.logo)),
+                ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: MySizes.size30SW),
             child: Column(
@@ -104,8 +124,8 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     ),
                   ],
                 ),
+                SizedBox(height: MySizes.size5SW),
                 Container(
-                  // color: Colors.amber,
                   height: MySizes.size40SW,
                   alignment: Alignment.center,
                   child: Transform.translate(
@@ -140,7 +160,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                     ),
                   ),
                 ),
-                SizedBox(height: MySizes.size5SW),
+                SizedBox(height: MySizes.size15SW),
                 AnimatedButton(
                   height: MySizes.size50SW,
                   isFixedHeight: false,
@@ -148,9 +168,7 @@ class _LoginState extends State<Login> with TickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(MySizes.size12SW),
                   text: 'Đăng nhập',
                   color: MyColors.blue,
-                  pressEvent: () {
-                    Navigator.pushReplacementNamed(context, '/main');
-                  },
+                  pressEvent: _login,
                 ),
                 SizedBox(height: MySizes.size1SW),
                 TextButton(
